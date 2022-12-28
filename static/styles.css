@@ -19,3 +19,9 @@ div.leaderboard-div {
     max-height: 50%;
     overflow-y: scroll;
 }
+
+div.skip-btn {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+}

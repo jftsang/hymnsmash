@@ -67,12 +67,12 @@ def match_view():
 
         if winner == '1':
             delo1 = K * (1 - e1)
-            delo2 = K * (-1 - e2)
+            delo2 = - K * e2
             c1.ladder += 1
             c2.ladder = 0
             result = True
         else:
-            delo1 = K * (-1 - e1)
+            delo1 = - K * e1
             delo2 = K * (1 - e2)
             c1.ladder = 0
             c2.ladder += 1

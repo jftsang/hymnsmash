@@ -25,13 +25,13 @@
     </ul>
 {% endwith %}
 <div class="container">
-    <div class="row">
+    <div class="flex">
         <div id="mainDiv" class="container col">
             {% block content %}
             {% endblock %}
         </div>
 
-        <div id="sidebarDiv" class="sidebar-div container col-3">
+        <div id="sidebarDiv" class="sidebar-div container col">
             {% block sidebar %}
             {% endblock %}
         </div>

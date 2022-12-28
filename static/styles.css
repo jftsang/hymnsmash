@@ -9,12 +9,13 @@ div.competitor {
 
 div.sidebar-div {
     height: 100%;
-    max-height: 100vh;
+    align-items: center;
+    max-width: 500px;
 }
 
 div.leaderboard-div {
     position: absolute;
     padding: 2em;
-    max-height: 80%;
+    max-height: 50%;
     overflow-y: scroll;
 }

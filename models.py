@@ -1,3 +1,4 @@
+import json
 from typing import TypeVar
 
 from flask_sqlalchemy import SQLAlchemy
@@ -14,8 +15,10 @@ def listdict(xs: [T]) -> [dict]:
 class Competitor(db.Model):
     __tablename__ = 'competitor'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True, nullable=False)
-    elo = db.Column(db.Integer, default=1500)
+    name = db.Column(db.String, nullable=False)
+    elo = db.Column(db.Integer, default=1500, nullable=False)
+    ladder = db.Column(db.Integer, default=0, nullable=False)
+    extra = db.Column(db.JSON)
 
     def to_dict(self) -> dict:
         return {
@@ -52,3 +55,7 @@ class Match(db.Model):
             'player2_id': self.player2_id,
             'result': self.result,
         }
+
+
+def metadata(c: Competitor) -> dict:
+    return json.loads(c.extra or '{}')

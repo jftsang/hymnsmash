@@ -7,7 +7,7 @@ import dotenv
 from flask import Flask, jsonify, render_template, request, flash, redirect, \
     url_for
 
-from models import db, listdict, Competitor, Match
+from models import db, listdict, Competitor, Match, metadata
 
 dotenv.load_dotenv()
 
@@ -25,6 +25,11 @@ with app.app_context():
 @app.template_filter()
 def format_elo(elo):
     return f'{elo:.1f}'
+
+
+@app.template_filter()
+def hymn_number(competitor):
+    return metadata(competitor).get('number', '')
 
 
 @app.route('/')
@@ -63,10 +68,14 @@ def match_view():
         if winner == '1':
             delo1 = K * (1 - e1)
             delo2 = K * (-1 - e2)
+            c1.ladder += 1
+            c2.ladder = 0
             result = True
         else:
             delo1 = K * (-1 - e1)
             delo2 = K * (1 - e2)
+            c1.ladder = 0
+            c2.ladder += 1
             result = False
 
         c1.elo += delo1

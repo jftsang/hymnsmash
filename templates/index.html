@@ -22,12 +22,24 @@
 
             <div class="row">
                 <div id="voteP1Btn" class="competitor col btn btn-success m-3">
-                    <h1>{{ p1.name }}</h1>
-                    <p>{{ p1.elo | format_elo }}</p>
+                    <div class="row">
+                        <h1>{{ p1.name }}</h1>
+                        <p>(NEH {{ p1 | hymn_number }})<br/>
+                    </div>
+                    <div class="row bottom-0">
+                        <p>L: {{ p1.ladder }} /
+                            Elo: {{ p1.elo | format_elo }}</p>
+                    </div>
                 </div>
                 <div id="voteP2Btn" class="competitor col btn btn-warning m-3">
-                    <h1>{{ p2.name }}</h1>
-                    <p>{{ p2.elo | format_elo }}</p>
+                    <div class="row">
+                        <h1>{{ p2.name }}</h1>
+                        <p>(NEH {{ p2 | hymn_number }})<br/>
+                    </div>
+                    <div class="row bottom-0">
+                        <p>L: {{ p2.ladder }} /
+                            Elo: {{ p2.elo | format_elo }}</p>
+                    </div>
                 </div>
             </div>
         </div>

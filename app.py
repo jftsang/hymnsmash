@@ -5,7 +5,8 @@ from random import sample
 
 import dotenv
 from flask import Flask, jsonify, render_template, request, flash, redirect, \
-    url_for
+    url_for, make_response
+from markupsafe import Markup
 
 from models import db, listdict, Competitor, Match, metadata
 
@@ -35,8 +36,21 @@ def hymn_number(competitor):
 @app.route('/')
 def index_view():
     competitors = list(Competitor.all())
-    p1, p2 = sample(competitors, k=2)
-    return render_template('index.html', p1=p1, p2=p2, competitors=competitors)
+
+    if (
+        cookie_content := request.cookies.get(
+            'currentCompetition')) is not None:
+        id1, id2 = cookie_content.split()
+        p1 = db.get_or_404(Competitor, id1)
+        p2 = db.get_or_404(Competitor, id2)
+    else:
+        p1, p2 = sample(competitors, k=2)
+
+    resp = make_response(
+        render_template('index.html', p1=p1, p2=p2, competitors=competitors)
+    )
+    resp.set_cookie('currentCompetition', f'{p1.id} {p2.id}')
+    return resp
 
 
 @app.route('/competitor')
@@ -87,9 +101,15 @@ def match_view():
                       result=result)
         db.session.add(match)
         db.session.commit()
-        flash(f'{c1.name} score changed {delo1:.1f}')
-        flash(f'{c2.name} score changed {delo2:.1f}')
-        return redirect(url_for('index_view'))
+
+        resp = make_response(redirect(url_for('index_view')))
+        resp.delete_cookie('currentCompetition')
+
+        flash(Markup(
+            f'<strong>{c1.name}</strong> score changed <strong>{delo1:.1f}</strong>'))
+        flash(Markup(
+            f'<strong>{c2.name}</strong> score changed <strong>{delo2:.1f}</strong>'))
+        return resp
     else:
         return jsonify(listdict(Match.query.all()))
 

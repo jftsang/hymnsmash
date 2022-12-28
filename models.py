@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-
 T = TypeVar('T')
 
 
@@ -24,6 +23,13 @@ class Competitor(db.Model):
             'name': self.name,
             'elo': self.elo,
         }
+
+    @classmethod
+    def all(cls):
+        return db.session.execute(
+            db.select(cls)
+            .order_by(cls.elo.desc())
+        ).scalars()
 
 
 class Match(db.Model):

@@ -1,0 +1,9 @@
+<h2>Leaderboard</h2>
+<table id="leaderboard">
+    {% for c in competitors %}
+        <tr>
+            <td>{{ c.name }}</td>
+            <td>{{ c.elo | format_elo }}</td>
+        </tr>
+    {% endfor %}
+</table>

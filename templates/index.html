@@ -1,5 +1,37 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {{ url_for('competitor_list_view') }}
+
+    <form id="competitionForm"
+          action="{{ url_for('match_view') }}"
+          method="post">
+        <input type="hidden" name="p1" value="{{ p1.id }}"/>
+        <input type="hidden" name="p2" value="{{ p2.id }}"/>
+        <input type="hidden" name="winner" value=""/>
+
+        <div>
+            <div class="row justify-content-center">
+                <div class="col-9 text-center">
+                    <label>Your name
+                        <input type="text" name="submitter"
+                               class="form-control"
+                               placeholder="Your name..." required/>
+                    </label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="voteP1Btn" class="competitor col btn btn-success m-3">
+                    <h1>{{ p1.name }}</h1>
+                    <p>{{ p1.elo | format_elo }}</p>
+                </div>
+                <div id="voteP2Btn" class="competitor col btn btn-warning m-3">
+                    <h1>{{ p2.name }}</h1>
+                    <p>{{ p2.elo | format_elo }}</p>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script src="{{ url_for('static', filename='vote.js') }}"></script>
 {% endblock %}

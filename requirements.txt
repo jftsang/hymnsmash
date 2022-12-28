@@ -27,6 +27,8 @@ pexpect==4.8.0
 pickleshare==0.7.5
 prompt-toolkit==3.0.36
 psutil==5.9.4
+psycopg==3.1.7
+psycopg2-binary==2.9.5
 ptyprocess==0.7.0
 pure-eval==0.2.2
 Pygments==2.13.0

@@ -59,3 +59,13 @@ class Match(db.Model):
 
 def metadata(c: Competitor) -> dict:
     return json.loads(c.extra or '{}')
+
+
+def weight(c: Competitor) -> float:
+    return max(((c.elo - 1200) / 100) ** 2, 1)
+
+
+def serialize_competitor_details(c: Competitor) -> dict:
+    d = c.to_dict()
+    d['weight'] = weight(c)
+    return d

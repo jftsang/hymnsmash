@@ -1,14 +1,15 @@
 import os
 from datetime import time, datetime
 from http import HTTPStatus
-from random import sample
+from random import sample, choices
 
 import dotenv
 from flask import Flask, jsonify, render_template, request, flash, redirect, \
     url_for, make_response
 from markupsafe import Markup
 
-from models import db, listdict, Competitor, Match, metadata
+from models import db, listdict, Competitor, Match, metadata, weight, \
+    serialize_competitor_details
 
 dotenv.load_dotenv()
 
@@ -33,6 +34,11 @@ def hymn_number(competitor):
     return metadata(competitor).get('number', '')
 
 
+@app.template_filter()
+def format_weight(competitor):
+    return f'{weight(competitor):.2f}'
+
+
 @app.route('/')
 def index_view():
     competitors = list(Competitor.all())
@@ -44,7 +50,8 @@ def index_view():
         p1 = db.get_or_404(Competitor, id1)
         p2 = db.get_or_404(Competitor, id2)
     else:
-        p1, p2 = sample(competitors, k=2)
+        p1, p2 = choices(competitors, k=2,
+                         weights=[weight(c) for c in competitors])
 
     resp = make_response(
         render_template('index.html', p1=p1, p2=p2, competitors=competitors)
@@ -57,6 +64,12 @@ def index_view():
 def competitor_list_view():
     results = Competitor.all()
     return jsonify(listdict(results))
+
+
+@app.route('/competitor/<cid>')
+def competitor_detail_view(cid):
+    c = db.get_or_404(Competitor, cid)
+    return jsonify(serialize_competitor_details(c))
 
 
 @app.route('/match', methods=['GET', 'POST'])

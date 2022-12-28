@@ -11,7 +11,12 @@
         <tbody>
         {% for c in competitors %}
             <tr>
-                <td>{{ c.name }}</td>
+                <td><span data-bs-toggle="tooltip" data-bs-html="true"
+                          title="NEH {{ c | hymn_number }}<br/>
+Given its current Elo ranking, this hymn has a probability weighting of
+<strong>{{ c | format_weight }}</strong> for appearing in future
+contests.">{{ c.name }}</span>
+                </td>
                 <td data-bs-toggle="tooltip" data-bs-html="true"
                     title="Ladder score">{{ c.ladder }}</td>
                 <td data-bs-toggle="tooltip" data-bs-html="true"

@@ -47,3 +47,7 @@
 
     <script src="{{ url_for('static', filename='vote.js') }}"></script>
 {% endblock %}
+
+{% block sidebar %}
+    {% include 'leaderboard.html' %}
+{% endblock %}

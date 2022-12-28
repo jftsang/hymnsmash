@@ -12,8 +12,10 @@
         {% for c in competitors %}
             <tr>
                 <td>{{ c.name }}</td>
-                <td>{{ c.ladder }}</td>
-                <td>{{ c.elo | format_elo }}</td>
+                <td data-bs-toggle="tooltip" data-bs-html="true"
+                    title="Ladder score">{{ c.ladder }}</td>
+                <td data-bs-toggle="tooltip" data-bs-html="true"
+                    title="Elo ranking">{{ c.elo | format_elo }}</td>
             </tr>
         {% endfor %}
         </tbody>

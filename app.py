@@ -82,10 +82,6 @@ def match_view():
         c2 = db.get_or_404(Competitor, id2)
         winner = request.form['winner']
 
-        if winner not in {'1', '2'}:
-            flash('Winner field not populated properly', 'error')
-            return redirect(url_for('index_view'), HTTPStatus.BAD_REQUEST)
-
         q1 = 10 ** (c1.elo / 400)
         q2 = 10 ** (c2.elo / 400)
         e1 = q1 / (q1 + q2)
@@ -98,12 +94,22 @@ def match_view():
             c1.ladder += 1
             c2.ladder = 0
             result = True
-        else:
+        elif winner == '2':
             delo1 = - K * e1
             delo2 = K * (1 - e2)
             c1.ladder = 0
             c2.ladder += 1
             result = False
+        elif winner == 'skip':
+            delo1 = - K * e1
+            delo2 = - K * e2
+            c1.ladder = 0
+            c2.ladder = 0
+            result = None
+            flash('You didn\'t like either of them? Sorry to hear that...')
+        else:
+            flash('Winner field not populated properly', 'error')
+            return redirect(url_for('index_view'), HTTPStatus.BAD_REQUEST)
 
         c1.elo += delo1
         c2.elo += delo2

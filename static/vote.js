@@ -20,3 +20,4 @@ function listener(winner) {
 
 document.getElementById('voteP1Btn').addEventListener('click', listener(1));
 document.getElementById('voteP2Btn').addEventListener('click', listener(2));
+document.getElementById('skipBtn').addEventListener('click', listener('skip'));

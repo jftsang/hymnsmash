@@ -45,7 +45,7 @@ class Match(db.Model):
     # player1 = db.relationship("Competitor")
     player2_id = db.Column(db.Integer, db.ForeignKey('competitor.id'))
     # player2 = db.relationship("Competitor")
-    result = db.Column(db.Boolean, nullable=False)
+    result = db.Column(db.Boolean, nullable=True)
 
     def to_dict(self) -> dict:
         return {

@@ -35,6 +35,25 @@ class Competitor(db.Model):
             .order_by(cls.elo.desc())
         ).scalars()
 
+    @staticmethod
+    def count_matches(c: 'Competitor') -> (int, int):
+        matches1 = list(db.session.execute(
+            db.select(Match).filter_by(player1_id=c.id)
+        ).scalars())
+        matches2 = list(db.session.execute(
+            db.select(Match).filter_by(player2_id=c.id)
+        ).scalars())
+
+        wins = (
+            len([m for m in matches1 if m.result is True])
+            + len([m for m in matches2 if m.result is False])
+        )
+        losses = (
+            len([m for m in matches1 if m.result is False])
+            + len([m for m in matches2 if m.result is True])
+        )
+        return wins, losses
+
 
 class Match(db.Model):
     __tablename__ = 'match'
@@ -70,24 +89,10 @@ def serialize_competitor_details(c: Competitor) -> dict:
     d = c.to_dict()
     d['weight'] = weight(c)
 
-    matches1 = list(db.session.execute(
-        db.select(Match).filter_by(player1_id=c.id)
-    ).scalars())
-    matches2 = list(db.session.execute(
-        db.select(Match).filter_by(player2_id=c.id)
-    ).scalars())
-
-    wins = (
-        len([m for m in matches1 if m.result is True])
-        + len([m for m in matches2 if m.result is False])
-    )
-    losses = (
-        len([m for m in matches1 if m.result is False])
-        + len([m for m in matches2 if m.result is True])
-    )
-
     d['matches'] = ([match.id for match in matches1]
                     + [match.id for match in matches2])
+
+    wins, losses = count_matches(c)
 
     d['wins'] = wins
     d['losses'] = losses

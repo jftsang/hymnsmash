@@ -18,7 +18,10 @@
 
         <div class="d-flex flex-row justify-content-center">
             <div id="voteP1Btn"
-                 class="competitor btn btn-success m-3 d-flex flex-column col-5">
+                 class="competitor btn btn-success m-3 d-flex flex-column col-5"
+                 data-bs-toggle="tooltip"
+                 data-bs-html="true"
+                 title="{{ p1 | describe_winloss }}">
                 <div class="row mb-auto">
                     <h1>{{ p1.name }}</h1>
                     <p>NEH {{ p1 | hymn_number }}<br/>
@@ -30,7 +33,10 @@
             </div>
 
             <div id="voteP2Btn"
-                 class="competitor col btn btn-warning m-3 d-flex flex-column col-5">
+                 class="competitor col btn btn-warning m-3 d-flex flex-column col-5"
+                 data-bs-toggle="tooltip"
+                 data-bs-html="true"
+                 title="{{ p2 | describe_winloss }}">
                 <div class="row mb-auto">
                     <h1>{{ p2.name }}</h1>
                     <p>NEH {{ p2 | hymn_number }}<br/>

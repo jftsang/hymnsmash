@@ -39,6 +39,28 @@ def format_weight(competitor):
     return f'{weight(competitor):.2f}'
 
 
+@app.template_filter()
+def count_wins(competitor):
+    wins, _ = Competitor.count_matches(competitor)
+    return str(wins)
+
+
+@app.template_filter()
+def count_losses(competitor):
+    _, losses = Competitor.count_matches(competitor)
+    return str(losses)
+
+
+@app.template_filter()
+def describe_winloss(competitor):
+    wins, losses = Competitor.count_matches(competitor)
+    if wins + losses:
+        perc = 100 * wins / (wins + losses)
+    else:
+        perc = 0
+    return f'{wins} - {losses}<br/>({perc:.1f}%)'
+
+
 @app.route('/')
 def index_view():
     competitors = list(Competitor.all())

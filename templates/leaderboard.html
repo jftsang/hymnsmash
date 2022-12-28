@@ -4,8 +4,15 @@
         <thead>
         <tr>
             <td></td>
-            <td>L</td>
-            <td>Elo</td>
+            <td data-bs-toggle="tooltip"
+                title="Number of consecutively won matches.">Ladder
+            </td>
+            <td data-bs-toggle="tooltip"
+                data-bs-html="true"
+                title="Elo ranking: Weighted ranking that goes up more
+                if you beat a more highly-ranked competitor.">
+                Elo
+            </td>
         </tr>
         </thead>
         <tbody>
@@ -13,12 +20,14 @@
             <tr>
                 <td><span data-bs-toggle="tooltip" data-bs-html="true"
                           title="NEH {{ c | hymn_number }}<br/>
-Given its current Elo ranking, this hymn has a probability weighting of
-<strong>{{ c | format_weight }}</strong> for appearing in future
-contests.">{{ c.name }}</span>
+                    Given its current Elo ranking, this hymn has a probability
+                    weighting of <strong>{{ c | format_weight }}</strong> for
+                    appearing in future contests.">
+                    {{ c.name }}</span>
                 </td>
                 <td data-bs-toggle="tooltip" data-bs-html="true"
-                    title="Ladder score">{{ c.ladder }}</td>
+                    title="This hymn has won <strong>{{ c.ladder }}</strong>
+                    consecutive matches.">{{ c.ladder }}</td>
                 <td data-bs-toggle="tooltip" data-bs-html="true"
                     title="Elo ranking">{{ c.elo | format_elo }}</td>
             </tr>

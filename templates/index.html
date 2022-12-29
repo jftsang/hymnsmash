@@ -5,12 +5,11 @@
 {% endblock %}
 
 {% block sidebar %}
-    <h2 class="text-center">Leaderboard</h2>
     <p class="text-center">
         <a class="link text-decoration-none"
            href="{{ url_for('leaderboard_view') }}">Full leaderboard</a>
     </p>
-    <div class="leaderboard-div overflow-auto">
+    <div class="leaderboard-div mb-2">
         {% include 'leaderboardTable.html' %}
     </div>
 {% endblock %}

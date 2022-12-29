@@ -22,22 +22,22 @@
 
     <ul>
         {% for message in messages %}
-            <li>{{ message }}</li>
+            <li style="display: inline">{{ message }}</li>
         {% endfor %}
     </ul>
 {% endwith %}
 <div class="container">
     <div class="flex">
         <main>
-            <div id="mainDiv" class="container col">
+            <div id="mainDiv" class="col">
                 {% block content %}
                 {% endblock %}
             </div>
+            <div class="col">
+                {% block sidebar %}
+                {% endblock %}
+            </div>
         </main>
-        <div id="sidebarDiv" class="sidebar-div container col">
-            {% block sidebar %}
-            {% endblock %}
-        </div>
     </div>
 </div>
 

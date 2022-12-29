@@ -7,19 +7,6 @@ div.competitor {
     text-align: center;
 }
 
-div.sidebar-div {
-    height: 100%;
-    align-items: center;
-    max-width: 500px;
-}
-
-div.leaderboard-div {
-    position: absolute;
-    padding: 2em;
-    max-height: 50%;
-    overflow-y: scroll;
-}
-
 div.skip-btn {
     position: fixed;
     bottom: 10px;

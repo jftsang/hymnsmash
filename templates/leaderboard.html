@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <p><a id="backToGameLink" class="link" href="{{ url_for('index_view') }}">Back
+    <p><a id="backToGameLink" class="link"
+          href="{{ url_for('index_view') }}">Back
         to the
         game...</a></p>
 
@@ -18,7 +19,9 @@
            href="{{ url_for('leaderboard_view') }}?sortBy=elo">elo</a>
     </p>
 
-    {% include 'leaderboardTable.html' %}
+    <div class="container">
+        {% include 'leaderboardTable.html' %}
+    </div>
 {% endblock %}
 
 {% block sidebar %}

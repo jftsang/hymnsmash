@@ -19,10 +19,10 @@
     </thead>
     <tbody>
     {% for c in leaderboard %}
-        <tr>
+        <tr class="{{ c | leaderboard_color }}">
             <td><span data-bs-toggle="tooltip" data-bs-html="true"
                       title="NEH {{ c | hymn_number }}<br/>Click for details.">
-                    <a class="competitorDetails text-decoration-none"
+                    <a class="competitorDetails text-decoration-none text-body"
                        href="{{ url_for('competitor_detail_view', cid=c.id) }}">{{ c.name }}</a>
                 </span>
                 <span class="fs-6">

@@ -1,4 +1,4 @@
-from models import weight, metadata
+from models import weight, metadata, Competitor
 
 
 class Filter:
@@ -60,3 +60,14 @@ def describe_winloss(competitor):
     else:
         perc = 0
     return f'{wins} - {losses}<br/>({perc:.1f}%)'
+
+
+@Filter.register
+def leaderboard_color(c: Competitor) -> str:
+    if c.losses == 0 and c.wins > 0:
+        return 'table-success'
+    if c.losses > 0 and c.wins == 0:
+        return 'table-danger'
+    if c.losses == 0 and c.wins == 0:
+        return 'table-secondary'
+    return 'table-default'

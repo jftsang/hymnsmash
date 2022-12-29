@@ -27,7 +27,7 @@ with app.app_context():
 
 @app.template_filter()
 def format_elo(elo):
-    return f'{elo:.1f}'
+    return str(elo)
 
 
 @app.template_filter()

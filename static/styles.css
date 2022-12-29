@@ -26,3 +26,9 @@ div.skip-btn {
     right: 10px;
     z-index: 9999;
 }
+
+div.shortcut-help {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+}

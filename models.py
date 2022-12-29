@@ -18,6 +18,8 @@ class Competitor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     elo = db.Column(db.Integer, default=1500, nullable=False)
+    wins = db.Column(db.Integer, default=0, nullable=False)
+    losses = db.Column(db.Integer, default=0, nullable=False)
     ladder = db.Column(db.Integer, default=0, nullable=False)
     extra = db.Column(db.JSON)
 
@@ -47,13 +49,6 @@ class Competitor(db.Model):
                                .filter_by(loser_id=c.id)).scalars()
         )
         return won_matches, lost_matches
-
-    @staticmethod
-    def count_matches(c: 'Competitor') -> (int, int):
-        won_matches, lost_matches = Competitor.get_matches(c)
-        fake_victories = len([m for m in won_matches if m.meh])
-        return len(won_matches) - fake_victories, len(
-            lost_matches) + fake_victories
 
 
 class Match(db.Model):

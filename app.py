@@ -47,20 +47,8 @@ def format_weight(competitor):
 
 
 @app.template_filter()
-def count_wins(competitor):
-    wins, _ = Competitor.count_matches(competitor)
-    return str(wins)
-
-
-@app.template_filter()
-def count_losses(competitor):
-    _, losses = Competitor.count_matches(competitor)
-    return str(losses)
-
-
-@app.template_filter()
 def describe_winloss(competitor):
-    wins, losses = Competitor.count_matches(competitor)
+    wins, losses = competitor.wins, competitor.losses
     if wins + losses:
         perc = 100 * wins / (wins + losses)
     else:

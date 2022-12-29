@@ -109,11 +109,15 @@ def match_create_view():
         delo_loser = - K * loser_e
         winner.ladder = 0
         loser.ladder = 0
+        winner.losses += 1
+        loser.losses += 1
     else:
         delo_winner = K * (1 - winner_e)
         delo_loser = - K * loser_e
         winner.ladder += 1
         loser.ladder = 0
+        winner.wins += 1
+        loser.losses += 1
 
     winner.elo += delo_winner
     loser.elo += delo_loser

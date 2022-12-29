@@ -18,6 +18,19 @@ function listener(winner) {
   }
 }
 
-document.getElementById('voteP1Btn').addEventListener('click', listener(1));
-document.getElementById('voteP2Btn').addEventListener('click', listener(2));
-document.getElementById('skipBtn').addEventListener('click', listener('skip'));
+const voteP1Btn = document.getElementById('voteP1Btn');
+voteP1Btn.addEventListener('click', listener(1));
+const voteP2Btn = document.getElementById('voteP2Btn');
+voteP2Btn.addEventListener('click', listener(2));
+const skipBtn = document.getElementById('skipBtn');
+skipBtn.addEventListener('click', listener('skip'));
+
+document.addEventListener('keypress', (event) => {
+  if (event.key === 'f') {
+    voteP1Btn.click();
+  } else if (event.key === 'j') {
+    voteP2Btn.click();
+  } else if (event.key === 'q') {
+    skipBtn.click();
+  }
+})

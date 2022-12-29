@@ -64,7 +64,8 @@ def describe_winloss(competitor):
 app.route('/')(views.index_view)
 app.route('/competitor')(views.competitor_list_view)
 app.route('/competitor/<cid>')(views.competitor_detail_view)
-app.route('/match', methods=['GET', 'POST'])(views.match_view)
+app.route('/match', methods=['GET'])(views.match_list_view)
+app.route('/match', methods=['POST'])(views.match_create_view)
 
 if __name__ == '__main__':
     app.run()

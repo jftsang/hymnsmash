@@ -1,3 +1,4 @@
+import itertools
 from dataclasses import dataclass
 from datetime import datetime
 from http import HTTPStatus
@@ -28,10 +29,32 @@ def index_view():
                         p=weights)
 
     resp = make_response(
-        render_template('index.html', p1=p1, p2=p2, competitors=competitors)
+        render_template('index.html', p1=p1, p2=p2,
+                        leaderboard=itertools.islice(competitors, 5))
     )
     session['currentCompetition'] = (p1.id, p2.id)
     return resp
+
+
+def leaderboard_view():
+    sortby = {
+        'wins': Competitor.wins.desc(),
+        'losses': Competitor.losses.desc(),
+        'ladder': Competitor.ladder.desc(),
+        'elo': Competitor.elo.desc(),
+    }
+    sortby_param = request.args.get('sortBy', 'elo')
+
+    if sortby_param not in sortby:
+        flash(f'Invalid sortBy parameter {sortby_param}')
+        sortby_param = 'elo'
+
+    competitors = db.session.execute(
+        db.select(Competitor)
+        .order_by(sortby[sortby_param])
+    ).scalars()
+    return render_template('leaderboard.html',
+                           leaderboard=competitors)
 
 
 def competitor_list_view():

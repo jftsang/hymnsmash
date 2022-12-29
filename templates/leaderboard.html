@@ -1,51 +1,25 @@
-<h2 class="text-center">Leaderboard</h2>
-<div class="leaderboard-div overflow-auto">
-    <table id="leaderboard" class="table">
-        <thead>
+{% extends 'base.html' %}
 
-        <tr>
-            <td></td>
-            <td>Wins</td>
-            <td>Losses</td>
-            <td class="text-center">&percnt;</td>
-            <td data-bs-toggle="tooltip"
-                title="Number of consecutively won matches.">Ladder
-            </td>
-            <td data-bs-toggle="tooltip"
-                data-bs-html="true"
-                title="Elo ranking: Weighted ranking that goes up more
-                if you beat a more highly-ranked competitor.">
-                Elo
-            </td>
-        </tr>
-        </thead>
-        <tbody>
-        {% for c in competitors %}
-            <tr>
-                <td><span data-bs-toggle="tooltip" data-bs-html="true"
-                          title="NEH {{ c | hymn_number }}<br/>Click for details.">
-                    <a class="competitorDetails text-decoration-none"
-                       href="{{ url_for('competitor_detail_view', cid=c.id) }}">{{ c.name }}</a>
-                </span>
-                    <span class="fs-6">
-                        <a data-bs-toggle="tooltip"
-                           title="View on Hymnary.org"
-                           target="_blank"
-                           class="btn p-0 m-0"
-                           href="{{ c | hymnary_url }}">📗</a></span>
-                </td>
-                <td class="text-end">{{ c.wins }}</td>
-                <td class="text-end">{{ c.losses }}</td>
-                <td class="text-end">{{ c | winloss_perc }}</td>
-                <td class="text-end" data-bs-toggle="tooltip"
-                    data-bs-html="true"
-                    title="This hymn has won <strong>{{ c.ladder }}</strong>
-                    consecutive matches.">{{ c.ladder }}</td>
-                <td class="text-end" data-bs-toggle="tooltip"
-                    data-bs-html="true"
-                    title="Elo ranking">{{ c.elo | format_elo }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+{% block content %}
+    <p><a id="backToGameLink" class="link" href="{{ url_for('index_view') }}">Back
+        to the
+        game...</a></p>
+
+    <h1>Leaderboard</h1>
+
+    <p>Sort by:
+        <a class="link text-decoration-none"
+           href="{{ url_for('leaderboard_view') }}?sortBy=wins">wins</a>
+        <a class="link text-decoration-none"
+           href="{{ url_for('leaderboard_view') }}?sortBy=losses">losses</a>
+        <a class="link text-decoration-none"
+           href="{{ url_for('leaderboard_view') }}?sortBy=ladder">ladder</a>
+        <a class="link text-decoration-none"
+           href="{{ url_for('leaderboard_view') }}?sortBy=elo">elo</a>
+    </p>
+
+    {% include 'leaderboardTable.html' %}
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

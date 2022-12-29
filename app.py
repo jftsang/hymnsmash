@@ -22,6 +22,7 @@ with app.app_context():
 filters.Filter.app_register(app)
 
 app.route('/')(views.index_view)
+app.route('/leaderboard')(views.leaderboard_view)
 app.route('/competitor')(views.competitor_list_view)
 app.route('/competitor/<cid>')(views.competitor_detail_view)
 app.route('/match', methods=['GET'])(views.match_list_view)

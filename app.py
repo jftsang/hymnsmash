@@ -36,6 +36,11 @@ def hymn_number(competitor):
 
 
 @app.template_filter()
+def hymnary_url(competitor):
+    return f"https://hymnary.org/hymn/NEH/{hymn_number(competitor)}"
+
+
+@app.template_filter()
 def format_weight(competitor):
     return f'{weight(competitor):.2f}'
 

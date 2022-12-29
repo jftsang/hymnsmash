@@ -23,6 +23,12 @@
                     <a class="competitorDetails text-decoration-none"
                        href="{{ url_for('competitor_detail_view', cid=c.id) }}">{{ c.name }}</a>
                 </span>
+                    <span class="fs-6">
+                        <a data-bs-toggle="tooltip"
+                           title="View on Hymnary.org"
+                           target="_blank"
+                           class="btn p-0 m-0"
+                           href="{{ c | hymnary_url }}">📗</a></span>
                 </td>
                 <td data-bs-toggle="tooltip" data-bs-html="true"
                     title="This hymn has won <strong>{{ c.ladder }}</strong>

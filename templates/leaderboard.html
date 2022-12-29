@@ -2,8 +2,11 @@
 <div class="leaderboard-div overflow-auto">
     <table id="leaderboard" class="table">
         <thead>
+
         <tr>
             <td></td>
+            <td>Wins</td>
+            <td>Losses</td>
             <td data-bs-toggle="tooltip"
                 title="Number of consecutively won matches.">Ladder
             </td>
@@ -30,6 +33,8 @@
                            class="btn p-0 m-0"
                            href="{{ c | hymnary_url }}">📗</a></span>
                 </td>
+                <td>{{ c.wins }}</td>
+                <td>{{ c.losses }}</td>
                 <td data-bs-toggle="tooltip" data-bs-html="true"
                     title="This hymn has won <strong>{{ c.ladder }}</strong>
                     consecutive matches.">{{ c.ladder }}</td>

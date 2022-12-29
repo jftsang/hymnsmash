@@ -1,4 +1,5 @@
 import os
+from dataclasses import dataclass
 from datetime import time, datetime
 from http import HTTPStatus
 from random import sample, choices
@@ -90,8 +91,51 @@ def competitor_list_view():
 
 @app.route('/competitor/<cid>')
 def competitor_detail_view(cid):
+    @dataclass
+    class MatchResultDescription:
+        verb: str
+        other: Competitor
+        match: Match
+
     c = db.get_or_404(Competitor, cid)
-    return jsonify(serialize_competitor_details(c))
+    results = []
+    matches1 = list(db.session.execute(
+        db.select(Match).filter_by(player1_id=c.id)
+    ).scalars())
+    for match in matches1:
+        other = db.get_or_404(Competitor, match.player2_id)
+        if match.result is True:
+            verb = "Won"
+        elif match.result is False:
+            verb = "Lost"
+        elif match.result is None:
+            verb = "Meh"
+        else:
+            raise AssertionError
+
+        results.append(MatchResultDescription(verb, other, match))
+
+    matches2 = list(db.session.execute(
+        db.select(Match).filter_by(player2_id=c.id)
+    ).scalars())
+    for match in matches2:
+        other = db.get_or_404(Competitor, match.player1_id)
+        if match.result is False:
+            verb = "Won"
+        elif match.result is True:
+            verb = "Lost"
+        elif match.result is None:
+            verb = "Meh"
+        else:
+            raise AssertionError
+
+        results.append(MatchResultDescription(verb, other, match))
+
+    # return jsonify(serialize_competitor_details(c))
+    # return jsonify(match_msgs)
+    return render_template('competitorDetails.html', c=c,
+                           details=serialize_competitor_details(c),
+                           results=results)
 
 
 @app.route('/match', methods=['GET', 'POST'])

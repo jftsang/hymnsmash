@@ -19,11 +19,10 @@
         {% for c in competitors %}
             <tr>
                 <td><span data-bs-toggle="tooltip" data-bs-html="true"
-                          title="NEH {{ c | hymn_number }}<br/>
-                    Given its current Elo ranking, this hymn has a probability
-                    weighting of <strong>{{ c | format_weight }}</strong> for
-                    appearing in future contests.">
-                    {{ c.name }}</span>
+                          title="NEH {{ c | hymn_number }}<br/>Click for details.">
+                    <a class="competitorDetails text-decoration-none"
+                       href="{{ url_for('competitor_detail_view', cid=c.id) }}">{{ c.name }}</a>
+                </span>
                 </td>
                 <td data-bs-toggle="tooltip" data-bs-html="true"
                     title="This hymn has won <strong>{{ c.ladder }}</strong>

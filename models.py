@@ -49,8 +49,8 @@ class Competitor(db.Model):
             + len([m for m in matches2 if m.result is False])
         )
         losses = (
-            len([m for m in matches1 if m.result is False])
-            + len([m for m in matches2 if m.result is True])
+            len([m for m in matches1 if m.result is not True])
+            + len([m for m in matches2 if m.result is not False])
         )
         return wins, losses
 
@@ -89,10 +89,17 @@ def serialize_competitor_details(c: Competitor) -> dict:
     d = c.to_dict()
     d['weight'] = weight(c)
 
+    matches1 = list(db.session.execute(
+        db.select(Match).filter_by(player1_id=c.id)
+    ).scalars())
+    matches2 = list(db.session.execute(
+        db.select(Match).filter_by(player2_id=c.id)
+    ).scalars())
+
     d['matches'] = ([match.id for match in matches1]
                     + [match.id for match in matches2])
 
-    wins, losses = count_matches(c)
+    wins, losses = Competitor.count_matches(c)
 
     d['wins'] = wins
     d['losses'] = losses

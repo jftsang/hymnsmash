@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+    <p><a class="link" href="{{ url_for('index_view') }}">Back to the
+        game...</a></p>
+
+    <h1>{{ c.name }} ({{ c | hymn_number }})</h1>
+
+    <div class="justify-content-center">
+        <table class="table">
+            <thead>
+            <tr>
+                <td>Wins</td>
+                <td>Losses</td>
+                <td>Ladder</td>
+                <td>Elo</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ c | count_wins }}</td>
+                <td>{{ c | count_losses }}</td>
+                <td>{{ c.ladder }}</td>
+                <td>{{ c.elo }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p>
+        Given its current Elo ranking, this hymn has a probability
+        weighting of <strong>{{ c | format_weight }}</strong> for
+        appearing in future contests.
+    </p>
+
+    <h2>Match history</h2>
+    <ul>
+        {% for result in results %}
+            <li>{{ result.verb }} against <a class="link text-decoration-none"
+                                             href="{{ url_for('competitor_detail_view', cid=result.other.id) }}">
+                {{ result.other.name }}</a>
+                {#                ({{ result.match.submitter }})#}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

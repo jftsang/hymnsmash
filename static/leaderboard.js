@@ -13,6 +13,5 @@ document.addEventListener('DOMContentLoaded', () => {
           })
         }
       );
-
   }
 );

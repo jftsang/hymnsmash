@@ -1,8 +1,8 @@
 import os
 from dataclasses import dataclass
-from datetime import time, datetime
+from datetime import datetime
 from http import HTTPStatus
-from random import sample, choices
+from random import choices
 
 import dotenv
 from flask import Flask, jsonify, render_template, request, flash, redirect, \
@@ -198,12 +198,12 @@ def match_view():
         resp.delete_cookie('currentCompetition')
 
         flash(Markup(
-            f'<strong><a class="link text-decoration-none" href="/competitor/{c1.id}">{c1.name}</a></strong> '
-            f'score changed <strong>{delo1:.1f}</strong>'
+            f'<strong><a class="link text-decoration-none" href="/competitor/{c1.id}">{c1.name}</a></strong>: '
+            f'<strong>{c1.elo}</strong> (<strong>{delo1:+.0f}</strong>)'
         ))
         flash(Markup(
-            f'<strong><a class="link text-decoration-none" href="/competitor/{c2.id}">{c2.name}</a></strong> '
-            f'score changed <strong>{delo2:.1f}</strong>'
+            f'<strong><a class="link text-decoration-none" href="/competitor/{c2.id}">{c2.name}</a></strong>: '
+            f'<strong>{c2.elo}</strong> (<strong>{delo2:+.0f}</strong>)'
         ))
         return resp
     else:

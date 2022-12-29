@@ -193,9 +193,13 @@ def match_view():
         resp.delete_cookie('currentCompetition')
 
         flash(Markup(
-            f'<strong>{c1.name}</strong> score changed <strong>{delo1:.1f}</strong>'))
+            f'<strong><a class="link text-decoration-none" href="/competitor/{c1.id}">{c1.name}</a></strong> '
+            f'score changed <strong>{delo1:.1f}</strong>'
+        ))
         flash(Markup(
-            f'<strong>{c2.name}</strong> score changed <strong>{delo2:.1f}</strong>'))
+            f'<strong><a class="link text-decoration-none" href="/competitor/{c2.id}">{c2.name}</a></strong> '
+            f'score changed <strong>{delo2:.1f}</strong>'
+        ))
         return resp
     else:
         return jsonify(listdict(Match.query.all()))

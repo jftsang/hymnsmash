@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-    <p><a class="link" href="{{ url_for('index_view') }}">Back to the
+    <p><a id="backToGameLink" class="link" href="{{ url_for('index_view') }}">Back
+        to the
         game...</a></p>
 
     <h1>{{ c.name }} ({{ c | hymn_number }})</h1>
@@ -43,4 +44,10 @@
             </li>
         {% endfor %}
     </ul>
+    <script>
+      document.addEventListener('keypress', (event) => {
+        if (event.key === 'q')
+          document.getElementById("backToGameLink").click();
+      });
+    </script>
 {% endblock %}

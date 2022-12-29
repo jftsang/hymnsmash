@@ -64,10 +64,14 @@ def describe_winloss(competitor):
 
 @Filter.register
 def leaderboard_color(c: Competitor) -> str:
-    if c.losses == 0 and c.wins > 0:
-        return 'table-success'
-    if c.losses > 0 and c.wins == 0:
-        return 'table-danger'
-    if c.losses == 0 and c.wins == 0:
+    if c.wins + c.losses:
+        perc = 100 * c.wins / (c.wins + c.losses)
+    else:
         return 'table-secondary'
-    return 'table-default'
+
+    if perc >= 90:
+        return 'table-success'
+    elif perc <= 10:
+        return 'table-danger'
+    else:
+        return 'table-default'

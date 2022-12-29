@@ -39,9 +39,15 @@
     <h2>Match history</h2>
     <ul>
         {% for result in results %}
-            <li>{{ result.verb }} against <a class="link text-decoration-none"
-                                             href="{{ url_for('competitor_detail_view', cid=result.other.id) }}">
-                {{ result.other.name }}</a>
+            <li><strong>{{ result.verb }}</strong> against
+                <span class="hymnary-link"
+                      data-hurl="{{ result.other | hymnary_url }}">
+                <strong>
+                <a class="link text-decoration-none"
+                   href="{{ url_for('competitor_detail_view', cid=result.other.id) }}">
+                    {{ result.other.name }}</a>
+                </strong>
+            </span>
                 {% if result.delo is not none %}
                     (<strong>{{ result.delo | format_delo }}</strong>)
                 {% endif %}

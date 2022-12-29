@@ -10,6 +10,7 @@ from flask import jsonify, render_template, request, flash, redirect, \
     url_for, make_response, session
 from markupsafe import Markup
 
+from filters import leaderboard_color
 from models import db, listdict, Competitor, Match, weight, \
     serialize_competitor_details
 
@@ -28,9 +29,20 @@ def index_view():
                         replace=False,
                         p=weights)
 
+    leaders = list(set(itertools.islice(competitors, 5)) | {p1, p2})
+    leaders.sort(key=lambda c: c.elo, reverse=True)
+
+    def color(c):
+        if c == p1:
+            return 'table-success'
+        if c == p2:
+            return 'table-warning'
+        return 'table-default'
+
+    leaderboard = [(c, color(c)) for c in leaders]
     resp = make_response(
         render_template('index.html', p1=p1, p2=p2,
-                        leaderboard=itertools.islice(competitors, 5))
+                        leaderboard=leaderboard)
     )
     session['currentCompetition'] = (p1.id, p2.id)
     return resp
@@ -53,8 +65,11 @@ def leaderboard_view():
         db.select(Competitor)
         .order_by(sortby[sortby_param])
     ).scalars()
+
+    leaderboard = [(c, leaderboard_color(c)) for c in competitors]
+
     return render_template('leaderboard.html',
-                           leaderboard=competitors)
+                           leaderboard=leaderboard)
 
 
 def competitor_list_view():

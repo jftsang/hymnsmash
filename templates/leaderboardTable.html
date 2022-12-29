@@ -18,19 +18,16 @@
     </tr>
     </thead>
     <tbody>
-    {% for c in leaderboard %}
-        <tr class="{{ c | leaderboard_color }}">
-            <td><span data-bs-toggle="tooltip" data-bs-html="true"
-                      title="NEH {{ c | hymn_number }}<br/>Click for details.">
+    {% for c, class_name in leaderboard %}
+        <tr class="{{ class_name }}">
+            <td><span class="hymnary-link"
+                      data-hurl="{{ c | hymnary_url }}">
                     <a class="competitorDetails text-decoration-none text-body"
-                       href="{{ url_for('competitor_detail_view', cid=c.id) }}">{{ c.name }}</a>
+                       href="{{ url_for('competitor_detail_view', cid=c.id) }}"
+                       data-bs-toggle="tooltip" data-bs-html="true"
+                       title="NEH {{ c | hymn_number }}<br/>Click for details.">
+                        {{ c.name }}</a>
                 </span>
-                <span class="fs-6">
-                        <a data-bs-toggle="tooltip"
-                           title="View on Hymnary.org"
-                           target="_blank"
-                           class="btn p-0 m-0"
-                           href="{{ c | hymnary_url }}">📗</a></span>
             </td>
             <td class="text-end">{{ c.wins }}</td>
             <td class="text-end">{{ c.losses }}</td>

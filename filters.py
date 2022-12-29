@@ -43,6 +43,16 @@ def format_weight(competitor):
 
 
 @Filter.register
+def winloss_perc(competitor):
+    wins, losses = competitor.wins, competitor.losses
+    if wins + losses:
+        perc = 100 * wins / (wins + losses)
+    else:
+        perc = 0
+    return f'{perc:.1f}%'
+
+
+@Filter.register
 def describe_winloss(competitor):
     wins, losses = competitor.wins, competitor.losses
     if wins + losses:

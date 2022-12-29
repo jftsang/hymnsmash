@@ -7,6 +7,7 @@
             <td></td>
             <td>Wins</td>
             <td>Losses</td>
+            <td class="text-center">&percnt;</td>
             <td data-bs-toggle="tooltip"
                 title="Number of consecutively won matches.">Ladder
             </td>
@@ -33,12 +34,15 @@
                            class="btn p-0 m-0"
                            href="{{ c | hymnary_url }}">📗</a></span>
                 </td>
-                <td>{{ c.wins }}</td>
-                <td>{{ c.losses }}</td>
-                <td data-bs-toggle="tooltip" data-bs-html="true"
+                <td class="text-end">{{ c.wins }}</td>
+                <td class="text-end">{{ c.losses }}</td>
+                <td class="text-end">{{ c | winloss_perc }}</td>
+                <td class="text-end" data-bs-toggle="tooltip"
+                    data-bs-html="true"
                     title="This hymn has won <strong>{{ c.ladder }}</strong>
                     consecutive matches.">{{ c.ladder }}</td>
-                <td data-bs-toggle="tooltip" data-bs-html="true"
+                <td class="text-end" data-bs-toggle="tooltip"
+                    data-bs-html="true"
                     title="Elo ranking">{{ c.elo | format_elo }}</td>
             </tr>
         {% endfor %}

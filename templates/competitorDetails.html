@@ -14,6 +14,7 @@
             <tr>
                 <td>Wins</td>
                 <td>Losses</td>
+                <td>Win rate</td>
                 <td>Ladder</td>
                 <td>Elo</td>
             </tr>
@@ -22,6 +23,7 @@
             <tr>
                 <td>{{ c.wins }}</td>
                 <td>{{ c.losses }}</td>
+                <td>{{ c | winloss_perc }}</td>
                 <td>{{ c.ladder }}</td>
                 <td>{{ c.elo }}</td>
             </tr>

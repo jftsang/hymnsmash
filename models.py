@@ -1,4 +1,5 @@
 import json
+from math import exp
 from typing import TypeVar
 
 from flask_sqlalchemy import SQLAlchemy
@@ -82,7 +83,7 @@ def metadata(c: Competitor) -> dict:
 
 
 def weight(c: Competitor) -> float:
-    return max(((c.elo - 1200) / 100) ** 2, 1)
+    return exp((c.elo - 1500) / 100)
 
 
 def serialize_competitor_details(c: Competitor) -> dict:

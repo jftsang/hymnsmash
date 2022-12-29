@@ -131,6 +131,8 @@ def competitor_detail_view(cid):
 
         results.append(MatchResultDescription(verb, other, match))
 
+    results.sort(key=lambda r: r.match.timestamp)
+
     # return jsonify(serialize_competitor_details(c))
     # return jsonify(match_msgs)
     return render_template('competitorDetails.html', c=c,

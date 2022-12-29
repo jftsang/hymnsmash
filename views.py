@@ -45,45 +45,24 @@ def competitor_detail_view(cid):
         verb: str
         other: Competitor
         match: Match
+        delo: int
 
     c = db.get_or_404(Competitor, cid)
     results = []
-    matches1 = list(db.session.execute(
-        db.select(Match).filter_by(player1_id=c.id)
-    ).scalars())
-    for match in matches1:
-        other = db.get_or_404(Competitor, match.player2_id)
-        if match.result is True:
-            verb = "Won"
-        elif match.result is False:
-            verb = "Lost"
-        elif match.result is None:
-            verb = "Meh"
-        else:
-            raise AssertionError
+    won_matches, lost_matches = Competitor.get_matches(c)
+    for m in won_matches:
+        other = db.get_or_404(Competitor, m.loser_id)
+        verb = 'Meh' if m.meh else 'Won'
+        results.append(MatchResultDescription(verb, other, m, m.delo_winner))
 
-        results.append(MatchResultDescription(verb, other, match))
-
-    matches2 = list(db.session.execute(
-        db.select(Match).filter_by(player2_id=c.id)
-    ).scalars())
-    for match in matches2:
-        other = db.get_or_404(Competitor, match.player1_id)
-        if match.result is False:
-            verb = "Won"
-        elif match.result is True:
-            verb = "Lost"
-        elif match.result is None:
-            verb = "Meh"
-        else:
-            raise AssertionError
-
-        results.append(MatchResultDescription(verb, other, match))
+    for m in lost_matches:
+        other = db.get_or_404(Competitor, m.winner_id)
+        verb = 'Meh' if m.meh else 'Lost'
+        results.append(MatchResultDescription(verb, other, m, m.delo_loser))
 
     results.sort(key=lambda r: r.match.timestamp)
 
     # return jsonify(serialize_competitor_details(c))
-    # return jsonify(match_msgs)
     return render_template('competitorDetails.html', c=c,
                            details=serialize_competitor_details(c),
                            results=results)
@@ -96,47 +75,56 @@ def match_list_view():
 def match_create_view():
     submitter = request.form['submitter']
     id1 = request.form['p1']
-    c1 = db.get_or_404(Competitor, id1)
     id2 = request.form['p2']
-    c2 = db.get_or_404(Competitor, id2)
     winner = request.form['winner']
 
-    q1 = 10 ** (c1.elo / 400)
-    q2 = 10 ** (c2.elo / 400)
-    e1 = q1 / (q1 + q2)
-    e2 = q2 / (q1 + q2)
-    K = 32
-
     if winner == '1':
-        delo1 = K * (1 - e1)
-        delo2 = - K * e2
-        c1.ladder += 1
-        c2.ladder = 0
-        result = True
+        winner_id = id1
+        loser_id = id2
+        meh = False
     elif winner == '2':
-        delo1 = - K * e1
-        delo2 = K * (1 - e2)
-        c1.ladder = 0
-        c2.ladder += 1
-        result = False
+        winner_id = id2
+        loser_id = id1
+        meh = False
     elif winner == 'skip':
-        delo1 = - K * e1
-        delo2 = - K * e2
-        c1.ladder = 0
-        c2.ladder = 0
-        result = None
+        winner_id = id1
+        loser_id = id2
+        meh = True
         flash('You didn\'t like either of them? Sorry to hear that...')
     else:
         flash('Winner field not populated properly', 'error')
         return redirect(url_for('index_view'), HTTPStatus.BAD_REQUEST)
 
-    c1.elo += delo1
-    c2.elo += delo2
+    winner = db.get_or_404(Competitor, winner_id)
+    loser = db.get_or_404(Competitor, loser_id)
+
+    winner_q = 10 ** (winner.elo / 400)
+    loser_q = 10 ** (loser.elo / 400)
+    winner_e = winner_q / (winner_q + loser_q)
+    loser_e = loser_q / (winner_q + loser_q)
+    K = 32
+
+    if meh:
+        delo_winner = - K * winner_e
+        delo_loser = - K * loser_e
+        winner.ladder = 0
+        loser.ladder = 0
+    else:
+        delo_winner = K * (1 - winner_e)
+        delo_loser = - K * loser_e
+        winner.ladder += 1
+        loser.ladder = 0
+
+    winner.elo += delo_winner
+    loser.elo += delo_loser
 
     match = Match(submitter=submitter,
-                  timestamp=datetime.now().timestamp(), player1_id=id1,
-                  player2_id=id2,
-                  result=result)
+                  timestamp=datetime.now().timestamp(),
+                  winner_id=winner_id,
+                  loser_id=loser_id,
+                  delo_winner=delo_winner,
+                  delo_loser=delo_loser,
+                  meh=meh)
     db.session.add(match)
     db.session.commit()
 
@@ -144,11 +132,11 @@ def match_create_view():
     session['currentCompetition'] = None
 
     flash(Markup(
-        f'<strong><a class="link text-decoration-none" href="/competitor/{c1.id}">{c1.name}</a></strong>: '
-        f'<strong>{c1.elo}</strong> (<strong>{delo1:+.0f}</strong>)'
+        f'<strong><a class="link text-decoration-none" href="/competitor/{winner.id}">{winner.name}</a></strong>: '
+        f'<strong>{winner.elo}</strong> (<strong>{delo_winner:+.0f}</strong>)'
     ))
     flash(Markup(
-        f'<strong><a class="link text-decoration-none" href="/competitor/{c2.id}">{c2.name}</a></strong>: '
-        f'<strong>{c2.elo}</strong> (<strong>{delo2:+.0f}</strong>)'
+        f'<strong><a class="link text-decoration-none" href="/competitor/{loser.id}">{loser.name}</a></strong>: '
+        f'<strong>{loser.elo}</strong> (<strong>{delo_loser:+.0f}</strong>)'
     ))
     return resp

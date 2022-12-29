@@ -25,6 +25,13 @@ def format_elo(elo):
 
 
 @app.template_filter()
+def format_delo(delo: int | None) -> str:
+    if delo is None:
+        return ''
+    return f'{delo:+d}'
+
+
+@app.template_filter()
 def hymn_number(competitor):
     return metadata(competitor).get('number', '')
 

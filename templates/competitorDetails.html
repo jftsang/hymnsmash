@@ -40,6 +40,9 @@
             <li>{{ result.verb }} against <a class="link text-decoration-none"
                                              href="{{ url_for('competitor_detail_view', cid=result.other.id) }}">
                 {{ result.other.name }}</a>
+                {% if result.delo is not none %}
+                    (<strong>{{ result.delo | format_delo }}</strong>)
+                {% endif %}
                 {#                ({{ result.match.submitter }})#}
             </li>
         {% endfor %}

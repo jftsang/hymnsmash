@@ -37,23 +37,23 @@ class Competitor(db.Model):
         ).scalars()
 
     @staticmethod
-    def count_matches(c: 'Competitor') -> (int, int):
-        matches1 = list(db.session.execute(
-            db.select(Match).filter_by(player1_id=c.id)
-        ).scalars())
-        matches2 = list(db.session.execute(
-            db.select(Match).filter_by(player2_id=c.id)
-        ).scalars())
+    def get_matches(c: 'Competitor') -> (['Match'], ['Match']):
+        won_matches = list(
+            db.session.execute(db.select(Match)
+                               .filter_by(winner_id=c.id)).scalars()
+        )
+        lost_matches = list(
+            db.session.execute(db.select(Match)
+                               .filter_by(loser_id=c.id)).scalars()
+        )
+        return won_matches, lost_matches
 
-        wins = (
-            len([m for m in matches1 if m.result is True])
-            + len([m for m in matches2 if m.result is False])
-        )
-        losses = (
-            len([m for m in matches1 if m.result is not True])
-            + len([m for m in matches2 if m.result is not False])
-        )
-        return wins, losses
+    @staticmethod
+    def count_matches(c: 'Competitor') -> (int, int):
+        won_matches, lost_matches = Competitor.get_matches(c)
+        fake_victories = len([m for m in won_matches if m.meh])
+        return len(won_matches) - fake_victories, len(
+            lost_matches) + fake_victories
 
 
 class Match(db.Model):
@@ -61,20 +61,22 @@ class Match(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.Integer)
     submitter = db.Column(db.String, nullable=False)
-    player1_id = db.Column(db.Integer, db.ForeignKey('competitor.id'))
-    # player1 = db.relationship("Competitor")
-    player2_id = db.Column(db.Integer, db.ForeignKey('competitor.id'))
-    # player2 = db.relationship("Competitor")
-    result = db.Column(db.Boolean, nullable=True)
+    winner_id = db.Column(db.Integer, db.ForeignKey('competitor.id'))
+    loser_id = db.Column(db.Integer, db.ForeignKey('competitor.id'))
+    delo_winner = db.Column(db.Integer, nullable=True)
+    delo_loser = db.Column(db.Integer, nullable=True)
+    meh = db.Column(db.Boolean, nullable=False)
 
     def to_dict(self) -> dict:
         return {
             'id': self.id,
             'timestamp': self.timestamp,
             'submitter': self.submitter,
-            'player1_id': self.player1_id,
-            'player2_id': self.player2_id,
-            'result': self.result,
+            'winner_id': self.winner_id,
+            'loser_id': self.loser_id,
+            'delo_winner': self.delo_winner,
+            'delo_loser': self.delo_loser,
+            'meh': self.meh,
         }
 
 
@@ -90,18 +92,12 @@ def serialize_competitor_details(c: Competitor) -> dict:
     d = c.to_dict()
     d['weight'] = weight(c)
 
-    matches1 = list(db.session.execute(
-        db.select(Match).filter_by(player1_id=c.id)
-    ).scalars())
-    matches2 = list(db.session.execute(
-        db.select(Match).filter_by(player2_id=c.id)
-    ).scalars())
+    won_matches, lost_matches = Competitor.get_matches(c)
 
-    d['matches'] = ([match.id for match in matches1]
-                    + [match.id for match in matches2])
+    matches = sorted(won_matches + lost_matches, key=lambda m: m.timestamp)
 
-    wins, losses = Competitor.count_matches(c)
-
+    d['matches'] = [match.id for match in matches]
+    wins, losses = len(won_matches), len(lost_matches)
     d['wins'] = wins
     d['losses'] = losses
 

@@ -7,7 +7,7 @@ import numpy as np
 from numpy.random import choice
 
 from flask import jsonify, render_template, request, flash, redirect, \
-    url_for, make_response, session
+    url_for, make_response, session, Response
 from markupsafe import Markup
 
 from filters import leaderboard_color
@@ -16,30 +16,25 @@ from models import db, listdict, Competitor, Match, weight, \
 
 
 def index_view():
-    competitors = list(Competitor.all())
-
     if (cc := session.get('currentCompetition')) is not None:
         id1, id2 = cc
         p1 = db.get_or_404(Competitor, id1)
         p2 = db.get_or_404(Competitor, id2)
     else:
+        competitors = list(Competitor.all())
         weights = np.array([weight(c) for c in competitors])
         weights /= sum(weights)
         p1, p2 = choice(competitors, size=2,
                         replace=False,
                         p=weights)
 
-    leaders = list(set(itertools.islice(competitors, 5)) | {p1, p2})
-    leaders.sort(key=lambda c: c.elo, reverse=True)
+    leaderboard = [(p1, 'table-success'), (p2, 'table-warning')]
+    recent = [db.get_or_404(Competitor, cid)
+              for cid in session.get('recentCompetitors', [])]
+    leaderboard += [(c, 'table-default')
+                    for c in recent
+                    if c not in {p1, p2}]
 
-    def color(c):
-        if c == p1:
-            return 'table-success'
-        if c == p2:
-            return 'table-warning'
-        return 'table-default'
-
-    leaderboard = [(c, color(c)) for c in leaders]
     resp = make_response(
         render_template('index.html', p1=p1, p2=p2,
                         leaderboard=leaderboard)
@@ -172,6 +167,10 @@ def match_create_view():
 
     resp = make_response(redirect(url_for('index_view')))
     session['currentCompetition'] = None
+
+    # TODO use a deque (n.b. not JSON serializable) to have more than
+    # two elements at a time - but beware dupes.
+    session['recentCompetitors'] = [winner.id, loser.id]
 
     flash(Markup(
         f'<strong><a class="link text-decoration-none" href="/competitor/{winner.id}">{winner.name}</a></strong>: '

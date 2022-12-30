@@ -1,14 +1,12 @@
-import itertools
 from dataclasses import dataclass
 from datetime import datetime
 from http import HTTPStatus
 
 import numpy as np
-from numpy.random import choice
-
 from flask import jsonify, render_template, request, flash, redirect, \
     url_for, make_response, session, Response
 from markupsafe import Markup
+from numpy.random import choice
 
 from filters import leaderboard_color
 from models import db, listdict, Competitor, Match, weight, \
@@ -99,10 +97,6 @@ def competitor_detail_view(cid):
     return render_template('competitorDetails.html', c=c,
                            details=serialize_competitor_details(c),
                            results=results)
-
-
-def match_list_view():
-    return jsonify(listdict(Match.query.all()))
 
 
 def match_create_view():

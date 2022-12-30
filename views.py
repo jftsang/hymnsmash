@@ -106,10 +106,16 @@ def match_list_view():
 
 
 def match_create_view():
-    submitter = request.form['submitter']
-    id1 = request.form['p1']
-    id2 = request.form['p2']
-    winner = request.form['winner']
+    def formget(field):
+        try:
+            return request.form[field]
+        except KeyError:
+            return Response(status=HTTPStatus.BAD_REQUEST)
+
+    submitter = formget('submitter')
+    id1 = formget('p1')
+    id2 = formget('p2')
+    winner = formget('winner')
 
     if winner == '1':
         winner_id = id1

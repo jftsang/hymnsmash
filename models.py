@@ -29,6 +29,9 @@ class Competitor(db.Model):
             'name': self.name,
             'ladder': self.ladder,
             'elo': self.elo,
+            'wins': self.wins,
+            'losses': self.losses,
+            'extra': json.loads(self.extra),
         }
 
     @classmethod

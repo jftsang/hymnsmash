@@ -65,9 +65,14 @@ def leaderboard_view():
                            leaderboard=leaderboard)
 
 
-def competitor_list_view():
-    results = Competitor.all()
-    return jsonify(listdict(results))
+def competitor_list_api_view():
+    cids = request.args.get('cids', '')
+    if cids:
+        competitors = [db.get_or_404(Competitor, int(cid))
+                       for cid in cids.split(',')]
+    else:
+        competitors = db.session.execute(db.select(Competitor)).scalars()
+    return jsonify([c.to_dict() for c in competitors])
 
 
 def competitor_detail_view(cid):

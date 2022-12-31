@@ -4,6 +4,8 @@ from typing import TypeVar
 
 from flask_sqlalchemy import SQLAlchemy
 
+from utils import BinomialDistribution
+
 db = SQLAlchemy()
 
 T = TypeVar('T')
@@ -83,7 +85,11 @@ def metadata(c: Competitor) -> dict:
 
 
 def weight(c: Competitor) -> float:
-    return exp((c.elo - 1500) / 100) / log(c.wins + c.losses + 2)
+    if n := c.wins + c.losses:
+        _, uncertainty = BinomialDistribution.estimate_p(n, c.wins)
+    else:
+        uncertainty = 1
+    return 2 / (1 + exp(-(c.elo - 1500) / 100)) * (1 + uncertainty)
 
 
 def serialize_competitor_details(c: Competitor) -> dict:

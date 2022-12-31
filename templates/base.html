@@ -27,18 +27,18 @@
     </ul>
 {% endwith %}
 <div class="container">
-    <div class="flex">
-        <main>
-            <div id="mainDiv" class="col">
+    <main>
+        <div class="row">
+            <div id="mainDiv" class="col-md-8">
                 {% block content %}
                 {% endblock %}
             </div>
-            <div class="col">
+            <div class="col-md-4">
                 {% block sidebar %}
                 {% endblock %}
             </div>
-        </main>
-    </div>
+        </div>
+    </main>
 </div>
 
 

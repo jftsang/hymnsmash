@@ -9,7 +9,7 @@
         <a class="link text-decoration-none"
            href="{{ url_for('leaderboard_view') }}">Full leaderboard</a>
     </p>
-    <div class="leaderboard-div mb-2">
+    <div class="container mb-2 overflow-auto">
         {% include 'leaderboardTable.html' %}
     </div>
 {% endblock %}

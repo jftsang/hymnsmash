@@ -2,15 +2,12 @@ from dataclasses import dataclass
 from datetime import datetime
 from http import HTTPStatus
 
-import numpy as np
 from flask import jsonify, render_template, request, flash, redirect, \
     url_for, make_response, session, Response
 from markupsafe import Markup
-from numpy.random import choice
 
 from filters import leaderboard_color
-from models import db, listdict, Competitor, Match, weight, \
-    serialize_competitor_details
+from models import db, Competitor, Match, serialize_competitor_details
 
 
 def index_view():
@@ -19,12 +16,7 @@ def index_view():
         p1 = db.get_or_404(Competitor, id1)
         p2 = db.get_or_404(Competitor, id2)
     else:
-        competitors = list(Competitor.all())
-        weights = np.array([weight(c) for c in competitors])
-        weights /= sum(weights)
-        p1, p2 = choice(competitors, size=2,
-                        replace=False,
-                        p=weights)
+        p1, p2 = Competitor.pick_two()
 
     leaderboard = [(p1, 'table-success'), (p2, 'table-warning')]
     recent = [db.get_or_404(Competitor, cid)

@@ -2,7 +2,9 @@ import json
 from math import exp, log
 from typing import TypeVar
 
+import numpy as np
 from flask_sqlalchemy import SQLAlchemy
+from numpy.random import choice
 
 from utils import BinomialDistribution
 
@@ -54,6 +56,22 @@ class Competitor(db.Model):
                                .filter_by(loser_id=c.id)).scalars()
         )
         return won_matches, lost_matches
+
+    @classmethod
+    def pick_two(cls) -> ('Competitor', 'Competitor'):
+        competitors = list(cls.all())
+        weights = np.array([weight(c) for c in competitors])
+        weights /= sum(weights)
+        p1 = None
+        p2 = None
+        delo = float('inf')
+        while delo > 200:
+            p1, p2 = choice(competitors, size=2,
+                            replace=False,
+                            p=weights)
+            delo = abs(p1.elo - p2.elo)
+
+        return p1, p2
 
 
 class Match(db.Model):

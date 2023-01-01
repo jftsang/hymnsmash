@@ -26,19 +26,19 @@
         {% endfor %}
     </ul>
 {% endwith %}
-<div class="container">
-    <main>
-        <div class="row">
-            <div id="mainDiv" class="col-md-8">
+<div class="container-md">
+    <div class="row">
+        <div id="mainDiv" class="col-md-8">
+            <main>
                 {% block content %}
                 {% endblock %}
-            </div>
-            <div class="col-md-4">
-                {% block sidebar %}
-                {% endblock %}
-            </div>
+            </main>
         </div>
-    </main>
+        <div class="col-md-4">
+            {% block sidebar %}
+            {% endblock %}
+        </div>
+    </div>
 </div>
 
 

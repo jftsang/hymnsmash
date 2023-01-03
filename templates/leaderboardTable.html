@@ -1,10 +1,20 @@
+<div class="d-flex">
+    <div class="flex-grow-1"></div>
+    <div>
+        <a id="toggleAdvancedViewBtn"
+           class="btn btn-secondary btn-sm fs-6"
+           data-bs-toggle="tooltip"
+           title="Show/hide Wilson win estimators">🤓</a>
+    </div>
+</div>
 <table id="leaderboard" class="table">
     <thead>
     <tr>
         <td></td>
         <td>Wins</td>
         <td>Losses</td>
-        <td class="text-center">&percnt;</td>
+        <td class="pc-naive text-center">&percnt;</td>
+        <td class="pc-estimate text-center"><i>p</i> estimate</td>
         <td data-bs-toggle="tooltip"
             title="Number of consecutively won matches.">Ladder
         </td>
@@ -30,7 +40,8 @@
             </td>
             <td class="text-end">{{ c.wins }}</td>
             <td class="text-end">{{ c.losses }}</td>
-            <td class="text-end">{{ c | winloss_perc }}</td>
+            <td class="pc-naive text-end">{{ c | winloss_perc }}</td>
+            <td class="pc-estimate text-end">{{ c | p_estimate }}</td>
             <td class="text-end" data-bs-toggle="tooltip"
                 data-bs-html="true"
                 title="This hymn has won <strong>{{ c.ladder }}</strong>
@@ -42,3 +53,31 @@
     {% endfor %}
     </tbody>
 </table>
+
+<script>
+  const advancedViewBtn = document.getElementById('toggleAdvancedViewBtn');
+  const basicEls = document.querySelectorAll('.pc-naive');
+  const advancedEls = document.querySelectorAll('.pc-estimate');
+  basicEls.forEach((el) => {
+    el.style.display = '';
+  });
+  advancedEls.forEach((el) => {
+    el.style.display = 'none';
+  });
+
+  advancedViewBtn.addEventListener('click', () => {
+    basicEls.forEach((el) => {
+      if (el.style.display === '')
+        el.style.display = 'none';
+      else
+        el.style.display = '';
+    });
+
+    advancedEls.forEach((el) => {
+      if (el.style.display === '')
+        el.style.display = 'none';
+      else
+        el.style.display = '';
+    });
+  });
+</script>

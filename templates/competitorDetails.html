@@ -15,6 +15,7 @@
                 <td>Wins</td>
                 <td>Losses</td>
                 <td>Win rate</td>
+                <td><i>p</i> estimate</td>
                 <td>Ladder</td>
                 <td>Elo</td>
             </tr>
@@ -24,6 +25,7 @@
                 <td>{{ c.wins }}</td>
                 <td>{{ c.losses }}</td>
                 <td>{{ c | winloss_perc }}</td>
+                <td>{{ c | p_estimate }}</td>
                 <td>{{ c.ladder }}</td>
                 <td>{{ c.elo }}</td>
             </tr>

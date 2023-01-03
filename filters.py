@@ -1,4 +1,7 @@
+from markupsafe import Markup
+
 from models import weight, metadata, Competitor
+from utils import BinomialDistribution
 
 
 class Filter:
@@ -45,6 +48,11 @@ def format_weight(competitor):
 @Filter.register
 def winloss_perc(competitor):
     wins, losses = competitor.wins, competitor.losses
+    # if n := (wins + losses):
+    #     phat, error = BinomialDistribution.estimate_p(n, wins, z=1.96)
+    #     return Markup(f'{phat * 100:.1f}% &#177; {error * 100:.1f}%')
+    # else:
+    #     return '&mdash;'
     if wins + losses:
         perc = 100 * wins / (wins + losses)
     else:
@@ -60,6 +68,18 @@ def describe_winloss(competitor):
     else:
         perc = 0
     return f'{wins} - {losses}<br/>({perc:.1f}%)'
+
+
+@Filter.register
+def p_estimate(competitor):
+    wins, losses = competitor.wins, competitor.losses
+    if wins + losses:
+        phat, error = BinomialDistribution.estimate_p(wins + losses, wins)
+        return Markup(
+            f'{phat * 100:.1f}&nbsp;&#177;&nbsp;{error * 100:.1f}&nbsp;&percnt;'
+        )
+
+    return '&mdash;'
 
 
 @Filter.register

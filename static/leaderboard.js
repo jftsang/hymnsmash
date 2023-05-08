@@ -42,12 +42,12 @@ document.addEventListener("DOMContentLoaded",
         const rowsArray = Array.from(tbody.rows);
 
         function compare(rowA, rowB) {
-          const a = rowA.cells[colNum].innerHTML
-          const b = rowB.cells[colNum].innerHTML
+          const a = rowA.cells[colNum].innerText;
+          const b = rowB.cells[colNum].innerText;
 
           let r;
           if (type === "number")
-            r = b - a;  // sort descending
+            r = Number(b) - Number(a);  // sort descending
           else if (type === "percentage")
             r = Number(b.substring(0, b.length - 1))
               - Number(a.substring(0, a.length - 1));

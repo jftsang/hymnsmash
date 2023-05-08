@@ -11,9 +11,11 @@ df = pd.read_csv(url)
 
 for row in df.itertuples():
     # print(row)
-    c = Competitor(name=row.displayTitle,
-                   elo=1500,
-                   extra=json.dumps({'number': row.number}))
+    c = Competitor(
+        name=row.displayTitle,
+        elo=1500,
+        extra=json.dumps({'number': row.number}),
+    )
     try:
         with app.app_context():
             db.session.add(c)

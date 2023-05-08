@@ -5,6 +5,6 @@ class BinomialDistribution:
         https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval
         """
         nf = n - ns
-        phat = (ns + z ** 2 / 2) / (n + z ** 2)
-        error = z / (n + (z ** 2)) * (ns * nf / n + (z ** 2) / 4) ** 0.5
+        phat = (ns + z**2 / 2) / (n + z**2)
+        error = z / (n + (z**2)) * (ns * nf / n + (z**2) / 4) ** 0.5
         return phat, error

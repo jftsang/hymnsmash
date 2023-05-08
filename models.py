@@ -41,19 +41,20 @@ class Competitor(db.Model):
     @classmethod
     def all(cls):
         return db.session.execute(
-            db.select(cls)
-            .order_by(cls.elo.desc())
+            db.select(cls).order_by(cls.elo.desc())
         ).scalars()
 
     @staticmethod
     def get_matches(c: 'Competitor') -> (['Match'], ['Match']):
         won_matches = list(
-            db.session.execute(db.select(Match)
-                               .filter_by(winner_id=c.id)).scalars()
+            db.session.execute(
+                db.select(Match).filter_by(winner_id=c.id)
+            ).scalars()
         )
         lost_matches = list(
-            db.session.execute(db.select(Match)
-                               .filter_by(loser_id=c.id)).scalars()
+            db.session.execute(
+                db.select(Match).filter_by(loser_id=c.id)
+            ).scalars()
         )
         return won_matches, lost_matches
 
@@ -66,9 +67,7 @@ class Competitor(db.Model):
         p2 = None
         delo = float('inf')
         while delo > 200:
-            p1, p2 = choice(competitors, size=2,
-                            replace=False,
-                            p=weights)
+            p1, p2 = choice(competitors, size=2, replace=False, p=weights)
             delo = abs(p1.elo - p2.elo)
 
         return p1, p2

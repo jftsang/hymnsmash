@@ -2,8 +2,17 @@ from dataclasses import dataclass
 from datetime import datetime
 from http import HTTPStatus
 
-from flask import jsonify, render_template, request, flash, redirect, \
-    url_for, make_response, session, Response
+from flask import (
+    jsonify,
+    render_template,
+    request,
+    flash,
+    redirect,
+    url_for,
+    make_response,
+    session,
+    Response,
+)
 from markupsafe import Markup
 
 from filters import leaderboard_color
@@ -19,15 +28,14 @@ def index_view():
         p1, p2 = Competitor.pick_two()
 
     leaderboard = [(p1, 'table-success'), (p2, 'table-warning')]
-    recent = [db.get_or_404(Competitor, cid)
-              for cid in session.get('recentCompetitors', [])]
-    leaderboard += [(c, 'table-default')
-                    for c in recent
-                    if c not in {p1, p2}]
+    recent = [
+        db.get_or_404(Competitor, cid)
+        for cid in session.get('recentCompetitors', [])
+    ]
+    leaderboard += [(c, 'table-default') for c in recent if c not in {p1, p2}]
 
     resp = make_response(
-        render_template('index.html', p1=p1, p2=p2,
-                        leaderboard=leaderboard)
+        render_template('index.html', p1=p1, p2=p2, leaderboard=leaderboard)
     )
     session['currentCompetition'] = (p1.id, p2.id)
     return resp
@@ -47,21 +55,20 @@ def leaderboard_view():
         sortby_param = 'elo'
 
     competitors = db.session.execute(
-        db.select(Competitor)
-        .order_by(sortby[sortby_param])
+        db.select(Competitor).order_by(sortby[sortby_param])
     ).scalars()
 
     leaderboard = [(c, leaderboard_color(c)) for c in competitors]
 
-    return render_template('leaderboard.html',
-                           leaderboard=leaderboard)
+    return render_template('leaderboard.html', leaderboard=leaderboard)
 
 
 def competitor_list_api_view():
     cids = request.args.get('cids', '')
     if cids:
-        competitors = [db.get_or_404(Competitor, int(cid))
-                       for cid in cids.split(',')]
+        competitors = [
+            db.get_or_404(Competitor, int(cid)) for cid in cids.split(',')
+        ]
     else:
         competitors = db.session.execute(db.select(Competitor)).scalars()
     return jsonify([c.to_dict() for c in competitors])
@@ -91,9 +98,12 @@ def competitor_detail_view(cid):
     results.sort(key=lambda r: r.match.timestamp)
 
     # return jsonify(serialize_competitor_details(c))
-    return render_template('competitorDetails.html', c=c,
-                           details=serialize_competitor_details(c),
-                           results=results)
+    return render_template(
+        'competitorDetails.html',
+        c=c,
+        details=serialize_competitor_details(c),
+        results=results,
+    )
 
 
 def match_create_view():
@@ -135,15 +145,15 @@ def match_create_view():
     K = 32
 
     if meh:
-        delo_winner = - K * winner_e
-        delo_loser = - K * loser_e
+        delo_winner = -K * winner_e
+        delo_loser = -K * loser_e
         winner.ladder = 0
         loser.ladder = 0
         winner.losses += 1
         loser.losses += 1
     else:
         delo_winner = K * (1 - winner_e)
-        delo_loser = - K * loser_e
+        delo_loser = -K * loser_e
         winner.ladder += 1
         loser.ladder = 0
         winner.wins += 1
@@ -152,13 +162,15 @@ def match_create_view():
     winner.elo += delo_winner
     loser.elo += delo_loser
 
-    match = Match(submitter=submitter,
-                  timestamp=datetime.now().timestamp(),
-                  winner_id=winner_id,
-                  loser_id=loser_id,
-                  delo_winner=delo_winner,
-                  delo_loser=delo_loser,
-                  meh=meh)
+    match = Match(
+        submitter=submitter,
+        timestamp=datetime.now().timestamp(),
+        winner_id=winner_id,
+        loser_id=loser_id,
+        delo_winner=delo_winner,
+        delo_loser=delo_loser,
+        meh=meh,
+    )
     db.session.add(match)
     db.session.commit()
 
@@ -169,12 +181,16 @@ def match_create_view():
     # two elements at a time - but beware dupes.
     session['recentCompetitors'] = [winner.id, loser.id]
 
-    flash(Markup(
-        f'<strong><a class="link text-decoration-none" href="/competitor/{winner.id}">{winner.name}</a></strong>: '
-        f'<strong>{winner.elo}</strong> (<strong>{delo_winner:+.0f}</strong>)'
-    ))
-    flash(Markup(
-        f'<strong><a class="link text-decoration-none" href="/competitor/{loser.id}">{loser.name}</a></strong>: '
-        f'<strong>{loser.elo}</strong> (<strong>{delo_loser:+.0f}</strong>)'
-    ))
+    flash(
+        Markup(
+            f'<strong><a class="link text-decoration-none" href="/competitor/{winner.id}">{winner.name}</a></strong>: '
+            f'<strong>{winner.elo}</strong> (<strong>{delo_winner:+.0f}</strong>)'
+        )
+    )
+    flash(
+        Markup(
+            f'<strong><a class="link text-decoration-none" href="/competitor/{loser.id}">{loser.name}</a></strong>: '
+            f'<strong>{loser.elo}</strong> (<strong>{delo_loser:+.0f}</strong>)'
+        )
+    )
     return resp

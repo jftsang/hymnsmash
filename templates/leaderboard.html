@@ -8,17 +8,6 @@
 
     <h1>Leaderboard</h1>
 
-    <p>Sort by:
-        <a class="link text-decoration-none"
-           href="{{ url_for('leaderboard_view') }}?sortBy=wins">wins</a>
-        <a class="link text-decoration-none"
-           href="{{ url_for('leaderboard_view') }}?sortBy=losses">losses</a>
-        <a class="link text-decoration-none"
-           href="{{ url_for('leaderboard_view') }}?sortBy=ladder">ladder</a>
-        <a class="link text-decoration-none"
-           href="{{ url_for('leaderboard_view') }}?sortBy=elo">elo</a>
-    </p>
-
     <div class="container">
         {% include 'leaderboardTable.html' %}
     </div>

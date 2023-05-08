@@ -42,20 +42,8 @@ def index_view():
 
 
 def leaderboard_view():
-    sortby = {
-        'wins': Competitor.wins.desc(),
-        'losses': Competitor.losses.desc(),
-        'ladder': Competitor.ladder.desc(),
-        'elo': Competitor.elo.desc(),
-    }
-    sortby_param = request.args.get('sortBy', 'elo')
-
-    if sortby_param not in sortby:
-        flash(f'Invalid sortBy parameter {sortby_param}')
-        sortby_param = 'elo'
-
     competitors = db.session.execute(
-        db.select(Competitor).order_by(sortby[sortby_param])
+        db.select(Competitor).order_by(Competitor.elo.desc())
     ).scalars()
 
     leaderboard = [(c, leaderboard_color(c)) for c in competitors]

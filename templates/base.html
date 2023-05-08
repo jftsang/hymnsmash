@@ -18,16 +18,20 @@
 </head>
 
 <body>
-{% with messages = get_flashed_messages() %}
-
-    <ul>
-        {% for message in messages %}
-            <li style="display: inline">{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endwith %}
 <div class="container-md">
     <div class="row">
+        <div id="titleDiv" class="col-md-12 text-center bigTitle">
+            <h1>HymnSmash</h1>
+        </div>
+    </div>
+    <div class="row">
+        {% with messages = get_flashed_messages() %}
+            <ul class="no-bullets">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endwith %}
         <div id="mainDiv" class="col-md-8">
             <main>
                 {% block content %}

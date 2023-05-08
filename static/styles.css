@@ -1,6 +1,15 @@
+@import url("https://fonts.googleapis.com/css?family=Tangerine");
+
+
 body {
     font-family: "Book Antiqua", serif;
     max-height: 100vh;
+}
+
+div.bigTitle h1 {
+    font-family: "Tangerine", cursive;
+    font-weight: bold;
+    text-shadow: 4px 4px 4px #aaa;
 }
 
 div.competitor {
@@ -18,4 +27,15 @@ div.shortcut-help {
     position: fixed;
     bottom: 10px;
     left: 10px;
+}
+
+h1 {
+    font-family: "Palatino", serif;
+    font-size: xx-large;
+}
+
+ul.no-bullets {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
 }

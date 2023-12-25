@@ -5,7 +5,7 @@ from flask import Flask
 
 import filters
 import views
-from models import db, Competitor, metadata, weight
+from models import db
 
 dotenv.load_dotenv()
 

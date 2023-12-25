@@ -1,5 +1,5 @@
 import json
-from math import exp, log
+from math import exp
 from typing import TypeVar
 
 import numpy as np
